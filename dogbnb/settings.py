@@ -77,13 +77,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dogbnb',  # nombre de tu BD en Azure
         'USER': 'DogbnbAdmin1050@dogbnbticproyect1',  # usuario completo
-        'PASSWORD': 'Dogbnb1050',
+        'PASSWORD': 'Loquendo1000',
         'HOST': 'dogbnbticproyect1.mysql.database.azure.com',
         'PORT': 3306,  # entero, no string
         'OPTIONS': {
             'ssl': {
                 # usamos ruta ABSOLUTA al pem que pusiste en certs/azure-mysql-ca.pem
-                'ca': str((BASE_DIR / 'certs' / 'azure-mysql-ca.pem').resolve())
+                'ca': str((BASE_DIR / 'certs' / 'DigiCertGlobalRootG2.crt.pem').resolve())
             },
             'charset': 'utf8mb4',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
