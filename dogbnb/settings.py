@@ -75,18 +75,16 @@ WSGI_APPLICATION = 'dogbnb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dogbnb',  # nombre de tu BD en Azure
-        'USER': 'DogbnbAdmin1050@dogbnbticproyect1',  # usuario completo
-        'PASSWORD': 'Loquendo1000',
-        'HOST': 'dogbnbticproyect1.mysql.database.azure.com',
-        'PORT': 3306,  # entero, no string
+        'NAME': os.environ.get('DB_NAME', 'mydb'),
+        'USER': os.environ.get('DB_USER', 'myuser'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'mypass'),
+        # MUY IMPORTANTE: el host es el nombre del servicio en docker-compose
+        'HOST': os.environ.get('DB_HOST', 'db'),
+        # Puerto interno del contenedor MySQL
+        'PORT': os.environ.get('DB_PORT', '3306'),
         'OPTIONS': {
-            'ssl': {
-                # usamos ruta ABSOLUTA al pem que pusiste en certs/azure-mysql-ca.pem
-                'ca': str((BASE_DIR / 'certs' / 'DigiCertGlobalRootG2.crt.pem').resolve())
-            },
             'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'init_command': "SET sql_mode='STRICT_ALL_TABLES'",
         },
     }
 }

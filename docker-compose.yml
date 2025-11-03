@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db:
-    image: mysql:8
+    image: mysql:8.4
     container_name: mysql-db
     restart: always
     environment:
@@ -11,25 +11,29 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypass
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
   backend:
-    build: ./backend
+    build:
+      context: .]
+      
+      dockerfile: Dockerfile
     container_name: django-backend
+    working_dir: /app
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend:/app
+      - .:/app
     ports:
       - "8000:8000"
     environment:
-      - DJANGO_SETTINGS_MODULE=backend.settings
-      - DB_HOST=db
-      - DB_NAME=mydb
-      - DB_USER=myuser
-      - DB_PASSWORD=mypass
-      - DB_PORT=3306
+      DJANGO_SETTINGS_MODULE: dogbnb.settings   # <- usa el paquete donde está settings.py
+      DB_HOST: db
+      DB_NAME: mydb
+      DB_USER: myuser
+      DB_PASSWORD: mypass
+      DB_PORT: "3306"
     depends_on:
       - db
 
