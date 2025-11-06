@@ -11,14 +11,13 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypass
     ports:
-      - "3307:3306"
+      - "3307:3306"   # opcional, solo si querés entrar desde tu host con Workbench
     volumes:
       - mysql_data:/var/lib/mysql
 
   backend:
     build:
-      context: .]
-      
+      context: .
       dockerfile: Dockerfile
     container_name: django-backend
     working_dir: /app
@@ -28,8 +27,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DJANGO_SETTINGS_MODULE: dogbnb.settings   # <- usa el paquete donde está settings.py
-      DB_HOST: db
+      DJANGO_SETTINGS_MODULE: dogbnb.settings
+      DB_HOST: db          # <-- nombre del servicio, NO IP ni 'localhost'
       DB_NAME: mydb
       DB_USER: myuser
       DB_PASSWORD: mypass

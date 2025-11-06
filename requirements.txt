@@ -1,6 +1,6 @@
-Django>=5.0
-mysqlclient>=2.2.0
-python-decouple>=3.8
-PyMySQL==1.1.0
-bcrypt
-
+Django==5.2.7
+djangorestframework==3.16.1
+PyMySQL==1.1.1
+bcrypt==4.2.1
+cryptography==42.0.8
+django-cors-headers==4.4.0
