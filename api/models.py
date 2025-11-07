@@ -1,17 +1,11 @@
 from django.db import models
-
-# Create your models here.
+from django.contrib.auth.models import User
 
 class Usuario(models.Model): 
-    id = models.BigAutoField(primary_key=True)
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=50)
-    email = models.CharField(max_length=255, unique=True)
-    password = models.CharField(max_length=255)
-    tipo = models.CharField(max_length=20)  # 'dueño' | 'anfitrion'
-    descripcion = models.TextField(null=True, blank=True)
-    creado = models.DateTimeField(auto_now_add=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="perfil")
 
-    class Meta:
-        db_table = 'usuarios'
-        managed = False  # ¡IMPORTANTE!
+    es_hospedador = models.BooleanField(default = False)
+
+    def __str__(self): 
+        return self.user.username
+    

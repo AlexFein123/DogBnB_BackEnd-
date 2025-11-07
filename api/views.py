@@ -1,24 +1,23 @@
 from django.shortcuts import render
 
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from .serializers import RegisterSerializer, LoginSerializer
+from rest_framework import status, views
+from .serializers import RegistroSerializer
 
-class RegisterView(APIView):
+class RegistrarUsuarioView(views.APIView):
+    authentication_classes = []  # registro público
+    permission_classes = []      # (tenés AllowAny por defecto)
+
     def post(self, request):
-        s = RegisterSerializer(data=request.data)
+        s = RegistroSerializer(data=request.data)
         if s.is_valid():
             user = s.save()
-            return Response({"id": user.id, "email": user.email, "nombre": user.nombre, "apellido": user.apellido}, status=status.HTTP_201_CREATED)
-        return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class LoginView(APIView):
-    def post(self, request):
-        s = LoginSerializer(data=request.data)
-        if s.is_valid():
-            user = s.validated_data['user']
-            # Por ahora devolvemos un "token" simple de ejemplo.
-            # En producción: usar JWT (djangorestframework-simplejwt).
-            return Response({"ok": True, "user": {"id": user.id, "email": user.email, "nombre": user.nombre, "apellido": user.apellido}})
+            return Response({
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "es_hospedador": user.perfil.es_hospedador,  # related_name="perfil"
+            }, status=status.HTTP_201_CREATED)
         return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
