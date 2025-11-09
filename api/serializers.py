@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Usuario
 
-class RegistroSerializer(serializers.Serializer):
+class RegisterSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=150)
     last_name  = serializers.CharField(max_length=150)
     username   = serializers.CharField(max_length=150)
@@ -11,7 +12,7 @@ class RegistroSerializer(serializers.Serializer):
 
     def validate_username(self, v):
         if User.objects.filter(username=v).exists():
-            raise serializers.ValidationError("Ese nombre de usuario ya existe.")
+            raise serializers.ValidationError("El nombre de usuario ya existe.")
         return v
 
     def validate_email(self, v):
@@ -19,13 +20,22 @@ class RegistroSerializer(serializers.Serializer):
             raise serializers.ValidationError("Ese email ya está registrado.")
         return v
 
-    def create(self, validated):
+    def create(self, validated_data):
         user = User.objects.create_user(
-            username   = validated["username"],
-            email      = validated["email"],
-            password   = validated["password"],     # ← Django la hashea con bcrypt
-            first_name = validated["first_name"],
-            last_name  = validated["last_name"],
+            username   = validated_data["username"],
+            email      = validated_data["email"],
+            password   = validated_data["password"],   # -> Django la hashea
+            first_name = validated_data["first_name"],
+            last_name  = validated_data["last_name"],
         )
+        # perfil asociado
         Usuario.objects.create(user=user, es_hospedador=False)
-        return user
+
+        # emitir tokens
+        refresh = RefreshToken.for_user(user)
+        return {
+            "user_id": user.id,
+            "username": user.username,
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        }
